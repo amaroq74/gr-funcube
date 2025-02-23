@@ -23,15 +23,15 @@
 namespace gr {
 namespace funcube {
 
-fcdpp_control::sptr fcdpp_control::make()
+fcdpp_control::sptr fcdpp_control::make(const std::string device_name, int unit)
 {
-    return gnuradio::make_block_sptr<fcdpp_control_impl>();
+    return gnuradio::make_block_sptr<fcdpp_control_impl>(device_name, unit);
 }
 
 /*
  * The private constructor
  */
-fcdpp_control_impl::fcdpp_control_impl()
+fcdpp_control_impl::fcdpp_control_impl(const std::string device_name, int unit)
     : gr::block("fcdpp_control",
                 gr::io_signature::make(0, 0, 0),
                 gr::io_signature::make(0, 0, 0))
@@ -39,7 +39,23 @@ fcdpp_control_impl::fcdpp_control_impl()
     /* setup the control part */
     d_control_handle = NULL;
     hid_init();
-    d_control_handle = hid_open(FCDPROPLUS_VENDOR_ID, FCDPROPLUS_PRODUCT_ID, NULL);
+
+    struct hid_device_info *devs = hid_enumerate(FCDPROPLUS_VENDOR_ID, FCDPROPLUS_PRODUCT_ID);
+    struct hid_device_info *cur_dev;
+    std::string path;
+
+    int cnt = 0;
+    for (cur_dev = devs; cur_dev; cur_dev = cur_dev->next) {
+        d_logger->info("Device Path: {:d} {:s}", cnt, cur_dev->path);
+        if ( device_name == "hw:4" && cnt == 0 ) path = std::string(cur_dev->path);
+        if ( device_name == "hw:5" && cnt == 1 ) path = std::string(cur_dev->path);
+        ++cnt;
+    }
+
+    d_logger->info("Using Path: {:s}", path);
+    d_control_handle = hid_open_path(path.c_str());
+
+   // d_control_handle = hid_open(FCDPROPLUS_VENDOR_ID, FCDPROPLUS_PRODUCT_ID, NULL);
     if (d_control_handle == NULL) {
         d_logger->error("FunCube Dongle  V2.0 not found.");
         throw std::runtime_error("FunCube Dongle  V2.0 not found.");

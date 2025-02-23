@@ -21,7 +21,7 @@ private:
     unsigned char aucBuf[65]; /*!< Buffers to read/write control messages to the dongle */
 
 public:
-    fcdpp_control_impl();
+    fcdpp_control_impl(const std::string device_name, int unit);
     ~fcdpp_control_impl();
 
     /* Public API functions documented in include/funcube/fcdpp_control.h */

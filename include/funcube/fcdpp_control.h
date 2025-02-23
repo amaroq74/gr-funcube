@@ -32,7 +32,7 @@ public:
      * class. funcube::fcdpp_control::make is the public interface for
      * creating new instances.
      */
-    static sptr make();
+    static sptr make(std::string device_name, int unit);
     /*! \brief Sets the frequency .
      *  \param freq The frequency in unit Hz
      *

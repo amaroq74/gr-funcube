@@ -38,6 +38,8 @@ fcdpp_impl::fcdpp_impl(const std::string user_device_name, int unit)
     if( !found)
         throw std::runtime_error("logger not found.");
 
+    this->d_logger->info("Passed args {:s} - {:d}",user_device_name,unit);
+
     std::string device_name;
     bool success;
     gr::blocks::float_to_complex::sptr f2c;
@@ -51,15 +53,17 @@ fcdpp_impl::fcdpp_impl(const std::string user_device_name, int unit)
     if (!user_device_name.empty()) {
         try {
             /* Audio source; sample rate fixed at 192kHz */
-            fcd = gr::audio::source::make(192000, user_device_name, true);
+            device_name = user_device_name + ",0";
+            this->d_logger->info("Attempting to open Audio device {:s} opened upper loop", device_name);
+            fcd = gr::audio::source::make(192000, device_name, true);
             success = true;
         } catch (std::exception const&) {
-            this->d_logger->info("Could not open device: {:s}",user_device_name);
+            this->d_logger->info("Could not open device: {:d}",device_name);
             success = false;
         }
     }
     if (success) {
-        device_name = user_device_name;
+        // device_name = user_device_name;
     } else {
         device_name.clear();
         std::string line;
@@ -85,6 +89,7 @@ fcdpp_impl::fcdpp_impl(const std::string user_device_name, int unit)
             throw std::runtime_error("Alsa not found.");
         }
         /* Audio source; sample rate fixed at 192kHz */
+        this->d_logger->info("Attempting to open Audio device {:s} opened lower loop", device_name);
         fcd = gr::audio::source::make(192000, device_name, true);
     }
     if (success) {
@@ -100,7 +105,7 @@ fcdpp_impl::fcdpp_impl(const std::string user_device_name, int unit)
     connect(fcd, 1, f2c, 1);
     connect(f2c, 0, self(), 0);
 
-    fcd_control_block = fcdpp_control::make();
+    fcd_control_block = fcdpp_control::make(user_device_name, unit);
 
     message_port_register_hier_in(pmt::mp("freq"));
     msg_connect(self(), pmt::mp("freq"), fcd_control_block, pmt::mp("freq"));
