@@ -114,7 +114,9 @@ fcdpp_impl::fcdpp_impl(const std::string user_device_name, int unit)
 /*
  * Our virtual destructor.
  */
-fcdpp_impl::~fcdpp_impl() {}
+fcdpp_impl::~fcdpp_impl() {
+   this->d_logger->info("Class is being closed");
+}
 
 void fcdpp_impl::set_freq(double freq)
 {
