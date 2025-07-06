@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Free Software Foundation, Inc.
+ * Copyright 2025 Free Software Foundation, Inc.
  *
  * This file is part of GNU Radio
  *
@@ -13,8 +13,8 @@
 /* If manual edits are made, the following tags should be modified accordingly.    */
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
-/* BINDTOOL_HEADER_FILE(fcdpp_control.h)                                           */
-/* BINDTOOL_HEADER_FILE_HASH(82387645d34cc0a210c81ab2c57f2fe4)                     */
+/* BINDTOOL_HEADER_FILE(fcdpp_control.h)                                        */
+/* BINDTOOL_HEADER_FILE_HASH(069eaa38eb292442342049249209299b)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -30,53 +30,40 @@ namespace py = pybind11;
 void bind_fcdpp_control(py::module& m)
 {
 
-    using fcdpp_control    = ::gr::funcube::fcdpp_control;
+    using fcdpp_control = ::gr::funcube::fcdpp_control;
 
 
-    py::class_<fcdpp_control, gr::block, gr::basic_block,
-        std::shared_ptr<fcdpp_control>>(m, "fcdpp_control", D(fcdpp_control))
+    py::class_<fcdpp_control, gr::block, gr::basic_block, std::shared_ptr<fcdpp_control>>(
+        m, "fcdpp_control", D(fcdpp_control))
 
         .def(py::init(&fcdpp_control::make),
-           D(fcdpp_control,make)
-        )
-        
+             py::arg("device_name"),
+             py::arg("unit"),
+             D(fcdpp_control, make))
 
 
+        .def("set_freq",
+             &fcdpp_control::set_freq,
+             py::arg("freq"),
+             D(fcdpp_control, set_freq))
 
 
-        .def("set_freq",&fcdpp_control::set_freq,
-            py::arg("freq"),
-            D(fcdpp_control,set_freq)
-        )
+        .def("set_lna",
+             &fcdpp_control::set_lna,
+             py::arg("gain"),
+             D(fcdpp_control, set_lna))
 
 
-        .def("set_lna",&fcdpp_control::set_lna,
-            py::arg("gain"),
-            D(fcdpp_control,set_lna)
-        )
+        .def("set_mixer_gain",
+             &fcdpp_control::set_mixer_gain,
+             py::arg("gain"),
+             D(fcdpp_control, set_mixer_gain))
 
 
-        .def("set_mixer_gain",&fcdpp_control::set_mixer_gain,
-            py::arg("gain"),
-            D(fcdpp_control,set_mixer_gain)
-        )
-
-
-        .def("set_if_gain",&fcdpp_control::set_if_gain,
-            py::arg("gain"),
-            D(fcdpp_control,set_if_gain)
-        )
+        .def("set_if_gain",
+             &fcdpp_control::set_if_gain,
+             py::arg("gain"),
+             D(fcdpp_control, set_if_gain))
 
         ;
-
-
-
-
 }
-
-
-
-
-
-
-

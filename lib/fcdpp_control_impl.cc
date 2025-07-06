@@ -47,8 +47,8 @@ fcdpp_control_impl::fcdpp_control_impl(const std::string device_name, int unit)
     int cnt = 0;
     for (cur_dev = devs; cur_dev; cur_dev = cur_dev->next) {
         d_logger->info("Device Path: {:d} {:s}", cnt, cur_dev->path);
-        if ( device_name == "hw:4" && cnt == 0 ) path = std::string(cur_dev->path);
-        if ( device_name == "hw:5" && cnt == 1 ) path = std::string(cur_dev->path);
+        if ( device_name == "hw:4" && cnt == 1 ) path = std::string(cur_dev->path);
+        if ( device_name == "hw:5" && cnt == 0 ) path = std::string(cur_dev->path);
         ++cnt;
     }
 
